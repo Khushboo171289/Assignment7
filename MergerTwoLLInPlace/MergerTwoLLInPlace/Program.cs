@@ -55,15 +55,62 @@ namespace MergerTwoLLInPlace
     }
     class Program
     {
+        public static Node MergerInPlace(Node h1, Node h2)
+        {
+            if (h1 == null)
+                return h2;
+            if (h2 == null)
+                return h1;
+            // start with the linked list whose head data is the smaller 
+            if (h1.data < h2.data)
+                return mergeUtil(h1, h2);
+            else
+                return mergeUtil(h2, h1);
+        }
+
+        private static Node mergeUtil(Node h1, Node h2)
+        {
+            //if list one have only one element
+            if (h1.next == null)
+            {
+                h1.next = h2;
+                return h1;
+            }
+            Node curr1 = h1;
+            Node next1 = h1.next;
+            Node curr2 = h2;
+            Node next2 = h2.next;
+            while(next1 != null && curr2 != null)
+            {
+                if (curr2.data >= curr1.data && curr2.data <= next1.data)
+                {
+                    next2 = curr2.next;
+                    curr1.next = curr2;
+                    curr2.next = next1;
+
+                    curr1 = curr2;
+                    curr2 = next2;
+                }
+                else if (next1.next != null)
+                {
+                    next1 = next1.next;
+                    curr1 = curr1.next;
+                }
+                else
+                {
+                    next1.next = curr2;
+                    return h1;
+                }
+            }
+            return h1;     
+        }
+
         public static Node MergeTwoLL(Node h1, Node h2, singleLinkedList output)
         {
             if (h1 == null)
                 return h2;
             if (h2 == null)
                 return h1;
-
-
-
             while (h1 != null || h2 != null)
             {
                 if(h1 != null && h2 != null)
@@ -98,7 +145,7 @@ namespace MergerTwoLLInPlace
         {
             singleLinkedList input1 = new singleLinkedList();
             singleLinkedList input2 = new singleLinkedList();
-            singleLinkedList output = new singleLinkedList();
+            //singleLinkedList output = new singleLinkedList();
             
             input1.addNodeAtEnd(10);
             input1.addNodeAtEnd(20);
@@ -111,8 +158,12 @@ namespace MergerTwoLLInPlace
             Console.WriteLine();
             input2.printList(input2.head);
             Console.WriteLine();
-            Node headnew = MergeTwoLL(input1.head, input2.head, output);
-            output.printList(headnew);
+
+            Node headnew = MergerInPlace(input1.head, input2.head);
+            Console.WriteLine("Mergerd list is");
+            input1.printList(headnew);
+            //Node headnew = MergeTwoLL(input1.head, input2.head, output);
+            //output.printList(headnew);
 
         }
     }
